@@ -28,6 +28,15 @@ class ZmqPublish extends ZmqConnector
         if(isset($index))
             $this->connection = 'publish.'.$index;
 
+        $parse_dsn = parse_url($this->dsn());
+        if(is_array($parse_dsn)){
+            $testConnection = @fsockopen($parse_dsn['host'], $parse_dsn['port']);
+            if(!is_resource($testConnection)){
+                return null;
+            }
+            fclose($testConnection);
+        }
+
         $context = new \ZMQContext();
         $socket_method = \Config::get(sprintf('zmq.connections.%s.method', $this->connection), \ZMQ::SOCKET_PUB);
         $socket = $context->getSocket($socket_method);

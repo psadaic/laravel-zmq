@@ -86,6 +86,9 @@ class Zmq
     {
         $connection = $this->connection($connection, $index);
 
+        if(!isset($connection))
+            return;
+
         if ($payload) {
             $payload = json_encode(['event' => $event, 'payload' => $payload]);
         } else {
